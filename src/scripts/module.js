@@ -2,11 +2,11 @@
   'use strict';
 
   angular
-    .module('mcVideoPreview', [
-      'mcVideoPreview.mcVideo',
-      'mcVideoPreview.videoMime',
-      'mcVideoPreview.VideoPreviewer',
-      'mcVideoPreview.videoSupportChecker'
+    .module('mcVideoPreviewer', [
+      'mcVideoPreviewer.mcVideo',
+      'mcVideoPreviewer.videoMime',
+      'mcVideoPreviewer.VideoPreviewer',
+      'mcVideoPreviewer.videoSupportChecker'
     ]);
 
 })(window, window.angular);

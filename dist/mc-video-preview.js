@@ -8,7 +8,8 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideoPreview.mcVideo', ['mcVideoPreview.VideoPreviewer', 'mcVideoPreview.videoSupportChecker']).directive('mcVideo', ['VideoPreviewer', 'videoSupportChecker', '$timeout', function (VideoPreviewer, VideoSupportChecker, $timeout) {
+  angular.module('mcVideoPreviewer.mcVideo', ['mcVideoPreviewer.VideoPreviewer', 'mcVideoPreviewer.videoSupportChecker']).directive('mcVideo', ['VideoPreviewer', 'videoSupportChecker', '$timeout', function (VideoPreviewer, videoSupportChecker, $timeout) {
+    /*jshint -W093 */
     return {
       restrict: 'E',
       controller: 'TestController',
@@ -16,65 +17,75 @@
         path: '=path'
       },
       template: '<div class="mc-video-preview">{{message}}</div>',
-      link: function link(scope, element, attrs) {
-        var handleVideoLoaded, handleVideoSourceError, source, video;
-        if (scope.path == null) {
+      link: function link(scope, element) {
+        var handleVideoLoaded, handleVideoSourceError, displayVideo, displayImage, isSupported, isntSupported, source, video;
+
+        if (scope.path === null || scope.path === undefined) {
           throw new Error('The path attribute must be defined');
         }
 
-        if (scope.path == null) {
+        if (scope.path === null || scope.path === undefined) {
           throw new Error('This module requires Video Support Checker');
         }
+
         scope.imgSupported = false;
         scope.videoSupported = false;
-        scope.vidObj = new VideoPreviewer({
-          path: scope.path
-        }, videoSupportChecker.video);
 
-        scope.isSupported = function () {
+        isSupported = function () {
           return scope.vidObj.isSupportedVideoType() === true;
         };
 
-        scope.isntSupported = function () {
+        isntSupported = function () {
           return scope.vidObj.isSupportedVideoType() === false;
         };
 
-        scope.displayVideo = function () {
+        displayVideo = function () {
           return scope.$apply(function () {
             scope.imgSupported = false;
-            return scope.videoSupported = true;
+            scope.videoSupported = true;
           });
         };
 
-        scope.displayImage = function () {
+        displayImage = function () {
           return scope.$apply(function () {
             scope.imgSupported = true;
-            return scope.videoSupported = false;
+            scope.videoSupported = false;
           });
         };
 
-        if (scope.isntSupported()) {
-          return scope.displayImage();
+        // If there is no support for HTML5 Video there is no need to go any further
+        if (videoSupportChecker.video === null || videoSupportChecker.video === undefined) {
+          displayImage();
         } else {
-          source = void 0;
-          video = void 0;
-          $timeout(function () {
-            source = element.find('source');
-            source.on('error', handleVideoSourceError);
-            video = element.find('video')[0];
-            return video.addEventListener('loadeddata', handleVideoLoaded);
-          }, 0, false);
-        }
+          // There is support for HTML5 Video
+          scope.vidObj = new VideoPreviewer({
+            path: scope.path
+          }, videoSupportChecker.video);
 
-        handleVideoSourceError = function (e) {
-          return scope.displayImage();
-        };
+          if (isntSupported()) {
+            displayImage();
+          } else {
+            source = void 0;
+            video = void 0;
+            $timeout(function () {
+              source = element.find('source');
+              source.on('error', handleVideoSourceError);
+              video = element.find('video')[0];
+              return video.addEventListener('loadeddata', handleVideoLoaded);
+            }, 0, false);
+          }
 
-        handleVideoLoaded = function (e) {
-          return scope.displayVideo();
-        };
-      }
+          handleVideoSourceError = function () {
+            return displayImage();
+          };
+
+          handleVideoLoaded = function () {
+            return displayVideo();
+          };
+        } // End Main If Else
+      } // End link key
     };
+    /*jshint +W093 */
   }]);
 })(window, window.angular);
 'use strict';
@@ -82,7 +93,7 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideoPreview', ['mcVideoPreview.mcVideo', 'mcVideoPreview.videoMime', 'mcVideoPreview.VideoPreviewer', 'mcVideoPreview.videoSupportChecker']);
+  angular.module('mcVideoPreviewer', ['mcVideoPreviewer.mcVideo', 'mcVideoPreviewer.videoMime', 'mcVideoPreviewer.VideoPreviewer', 'mcVideoPreviewer.videoSupportChecker']);
 })(window, window.angular);
 'use strict';
 
@@ -95,10 +106,10 @@
 
     isSupportedVideoType = function (path, detections) {
       var ext, mime;
-      if (path == null) {
+      if (path === null || path === undefined) {
         throw new Error('The path argument cannot be blank');
       }
-      if (detections == null) {
+      if (detections === null || detections === undefined) {
         throw new Error('The detections argument cannot be blank');
       }
       ext = extension(path);
@@ -120,7 +131,7 @@
     };
 
     mimeType = function (extension) {
-      if (extension == null) {
+      if (extension === null || extension === undefined) {
         throw new Error('The extension argument cannot be blank');
       }
       switch (extension) {
@@ -171,6 +182,8 @@
 
   angular.module('mcVideoPreview.VideoPreviewer', []).factory('VideoPreviewer', ['videoMime', '$sce', function (videoMime, $sce) {
     var VideoPreviewer;
+
+    /*jshint -W093 */
     return VideoPreviewer = (function () {
       function VideoPreviewer(options, videoDetections) {
         options = options || {};
@@ -198,13 +211,14 @@
             reason: 'The filepath is not defined'
           });
         }
+        return ext;
       };
 
       VideoPreviewer.prototype.mimeType = function () {
         var ext, mime;
         ext = this.extension();
         mime = void 0;
-        if (ext != null) {
+        if (ext !== null || ext !== undefined) {
           return videoMime.mimeType(ext);
         }
       };
@@ -215,6 +229,8 @@
 
       return VideoPreviewer;
     })();
+
+    /*jshint +W093 */
   }]);
 })(window, window.angular);
 'use strict';
@@ -222,33 +238,36 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideoPreview.videoSupportChecker', []).service('videoSupportChecker', function () {
+  angular.module('mcVideoPreviewer.videoSupportChecker', []).service('videoSupportChecker', function () {
     var service, supportsVideo, supports_h264_baseline_video, supports_ogg_theora_video, supports_webm_video, video;
 
-    var supportsVideo = function supportsVideo() {
+    supportsVideo = function () {
       return !!document.createElement('video').canPlayType;
     };
 
-    var supports_h264_baseline_video = function supports_h264_baseline_video() {
+    supports_h264_baseline_video = function () {
       var v = document.createElement('video');
       return v.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
     };
 
-    var supports_ogg_theora_video = function supports_ogg_theora_video() {
+    supports_ogg_theora_video = function () {
       var v = document.createElement('video');
       return v.canPlayType('video/ogg; codecs="theora, vorbis"');
     };
 
-    var supports_webm_video = function supports_webm_video() {
+    supports_webm_video = function () {
       var v = document.createElement('video');
       return v.canPlayType('video/webm; codecs="vp8, vorbis"');
     };
 
-    video = new Boolean(supportsVideo());
-    if (!!video === true) {
-      video.webm = supports_webm_video();
-      video.ogg = supports_ogg_theora_video();
-      video.h264 = supports_h264_baseline_video();
+    if (supportsVideo() === true) {
+      video = {
+        webm: supports_webm_video(),
+        ogg: supports_ogg_theora_video(),
+        h264: supports_h264_baseline_video()
+      };
+    } else {
+      video = undefined;
     }
 
     service = {

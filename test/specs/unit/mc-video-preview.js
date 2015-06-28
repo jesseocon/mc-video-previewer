@@ -1,10 +1,10 @@
 'use strict';
 
 describe('mcVideoPreview', function() {
-  beforeEach(module('mcVideoPreview'));
+  beforeEach(module('mcVideoPreviewer'));
   var VideoPreviewer, vmc, detections;
 
-  describe('mcVideoPreview.VideoPreviewer', function() {
+  describe('mcVideoPreviewer.VideoPreviewer', function() {
     beforeEach(function(){
       inject(function(_VideoPreviewer_) {
         VideoPreviewer = _VideoPreviewer_;

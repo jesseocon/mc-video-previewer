@@ -1,5 +1,5 @@
 {
-  "name": "mc-video-preview",
+  "name": "mc-video-previewer",
   "description": "video previewer before transcoded",
   "version": "0.1.0",
   "main": [

@@ -2,9 +2,9 @@
   'use strict';
 
   angular
-    .module('mcVideoPreview.mcVideo', [
-      'mcVideoPreview.VideoPreviewer',
-      'mcVideoPreview.videoSupportChecker'
+    .module('mcVideoPreviewer.mcVideo', [
+      'mcVideoPreviewer.VideoPreviewer',
+      'mcVideoPreviewer.videoSupportChecker'
     ])
     .directive('mcVideo', [
       'VideoPreviewer', 'videoSupportChecker', '$timeout', function(VideoPreviewer, videoSupportChecker, $timeout) {

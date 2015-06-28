@@ -5,7 +5,7 @@ video previewer before transcoded
 ## Installation
 
 ```console
-bower install mc-video-preview --production
+bower install mc-video-previewer --production
 ```
 
 ## Development
