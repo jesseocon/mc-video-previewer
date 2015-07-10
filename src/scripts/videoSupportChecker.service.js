@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('mcVideoPreviewer.videoSupportChecker', [])
+    .module('videoSupportChecker', [])
     .service('videoSupportChecker', function(){
       var service,
           supportsVideo,

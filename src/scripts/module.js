@@ -3,10 +3,10 @@
 
   angular
     .module('mcVideoPreviewer', [
-      'mcVideoPreviewer.mcVideo',
-      'mcVideoPreviewer.videoMime',
-      'mcVideoPreviewer.VideoPreviewer',
-      'mcVideoPreviewer.videoSupportChecker'
+      'mcVideo',
+      'videoMime',
+      'VideoPreviewer',
+      'videoSupportChecker'
     ]);
 
 })(window, window.angular);

@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('mcVideoPreviewer.VideoPreviewer', [])
+    .module('VideoPreviewer', [])
     .factory('VideoPreviewer', [
       'videoMime','$sce', function(videoMime, $sce) {
        var VideoPreviewer;

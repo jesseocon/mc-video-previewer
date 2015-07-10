@@ -1,7 +1,7 @@
 (function(window, angular, undefined) {
   'use strict';
   angular
-    .module('mcVideoPreviewer.videoMime', [])
+    .module('videoMime', [])
     .service('videoMime', function() {
       var extension,
           isSupportedByBrowser,

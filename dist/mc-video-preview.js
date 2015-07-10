@@ -8,15 +8,14 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideoPreviewer.mcVideo', ['mcVideoPreviewer.VideoPreviewer', 'mcVideoPreviewer.videoSupportChecker']).directive('mcVideo', ['VideoPreviewer', 'videoSupportChecker', '$timeout', function (VideoPreviewer, videoSupportChecker, $timeout) {
+  angular.module('mcVideo', ['VideoPreviewer', 'videoSupportChecker']).directive('mcVideo', ['VideoPreviewer', 'videoSupportChecker', '$timeout', function (VideoPreviewer, videoSupportChecker, $timeout) {
     /*jshint -W093 */
     return {
       restrict: 'E',
-      controller: 'TestController',
       scope: {
         path: '=path'
       },
-      template: '<div class="mc-video-preview">{{message}}</div>',
+      template: '<video class="mc-video-previewer-video" controls="controls" crossorigin="anonymous" ng-show="videoSupported === true"><source src="{{vidObj.sanitizedPath()}}" type="{{vidObj.mimeType()}}" /></video><div ng-show="imgSupported === true" "><p>Sorry your video could not be loaded in the browser, but don\'t worry we are transcoding it right now for you.</p></div>',
       link: function link(scope, element) {
         var handleVideoLoaded, handleVideoSourceError, displayVideo, displayImage, isSupported, isntSupported, source, video;
 
@@ -40,17 +39,13 @@
         };
 
         displayVideo = function () {
-          return scope.$apply(function () {
-            scope.imgSupported = false;
-            scope.videoSupported = true;
-          });
+          scope.imgSupported = false;
+          scope.videoSupported = true;
         };
 
         displayImage = function () {
-          return scope.$apply(function () {
-            scope.imgSupported = true;
-            scope.videoSupported = false;
-          });
+          scope.imgSupported = true;
+          scope.videoSupported = false;
         };
 
         // If there is no support for HTML5 Video there is no need to go any further
@@ -76,11 +71,13 @@
           }
 
           handleVideoSourceError = function () {
-            return displayImage();
+            displayImage();
+            scope.$apply();
           };
 
           handleVideoLoaded = function () {
-            return displayVideo();
+            displayVideo();
+            scope.$apply();
           };
         } // End Main If Else
       } // End link key
@@ -93,13 +90,13 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideoPreviewer', ['mcVideoPreviewer.mcVideo', 'mcVideoPreviewer.videoMime', 'mcVideoPreviewer.VideoPreviewer', 'mcVideoPreviewer.videoSupportChecker']);
+  angular.module('mcVideoPreviewer', ['mcVideo', 'videoMime', 'VideoPreviewer', 'videoSupportChecker']);
 })(window, window.angular);
 'use strict';
 
 (function (window, angular, undefined) {
   'use strict';
-  angular.module('mcVideoPreview.videoMime', []).service('videoMime', function () {
+  angular.module('videoMime', []).service('videoMime', function () {
     var extension, isSupportedByBrowser, isSupportedMimeType, isSupportedVideoType, mimeType, service, supportedVideoTypes;
 
     supportedVideoTypes = ['video/ogg', 'video/webm', 'video/mp4'];
@@ -180,7 +177,7 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideoPreview.VideoPreviewer', []).factory('VideoPreviewer', ['videoMime', '$sce', function (videoMime, $sce) {
+  angular.module('VideoPreviewer', []).factory('VideoPreviewer', ['videoMime', '$sce', function (videoMime, $sce) {
     var VideoPreviewer;
 
     /*jshint -W093 */
@@ -238,7 +235,7 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideoPreviewer.videoSupportChecker', []).service('videoSupportChecker', function () {
+  angular.module('videoSupportChecker', []).service('videoSupportChecker', function () {
     var service, supportsVideo, supports_h264_baseline_video, supports_ogg_theora_video, supports_webm_video, video;
 
     supportsVideo = function () {

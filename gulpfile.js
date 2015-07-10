@@ -127,7 +127,6 @@ gulp.task('watch', ['server', 'webpack', 'test-unit'], function() {
     basePath: './',
     reloadPage: 'demo/index.html'
   });
-  console.log(PATH.TEST + 'unit/specs/');
   gulp.watch(SOURCE.SCRIPTS + '*.js', ['jshint', 'webpack', 'test-unit']);
   gulp.watch(SOURCE.STYLES + '*.scss', ['sass']);
   gulp.watch(PATH.TEST + '/specs/unit/*.js', ['test-unit']);
