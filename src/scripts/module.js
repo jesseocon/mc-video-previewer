@@ -6,7 +6,8 @@
       'mcVideo',
       'videoMime',
       'VideoPreviewer',
-      'videoSupportChecker'
+      'videoSupportChecker',
+      'mcVideoPreviewerSettings'
     ]);
 
 })(window, window.angular);
