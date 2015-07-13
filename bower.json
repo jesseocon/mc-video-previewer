@@ -1,7 +1,7 @@
 {
   "name": "mc-video-previewer",
   "description": "video previewer before transcoded",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": [
     "dist/mc-video-preview.js",
     "dist/mc-video-preview.css"

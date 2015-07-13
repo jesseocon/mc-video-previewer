@@ -14,7 +14,8 @@
       restrict: 'E',
       transclude: true,
       scope: {
-        path: '=path'
+        path: '=path',
+        onErrorLoading: '&'
       },
       template: '<video class="mc-video-previewer-video" autoplay="{{autoplay}}" controls="{{controls}}" crossorigin="{{crossorigin}}" ng-show="videoSupported === true">' + '<source src="{{vidObj.sanitizedPath()}}" type="{{vidObj.mimeType()}}" />' + '</video>' + '<ng-transclude ng-show="imgSupported === true"></ng-transclude>',
       link: function link(scope, element) {
@@ -57,10 +58,12 @@
         displayImage = function () {
           scope.imgSupported = true;
           scope.videoSupported = false;
+          scope.onErrorLoading({ message: 'error loading video' });
         };
 
         scope.init = function () {
           // If there is no support for HTML5 Video there is no need to go any further
+          console.log('in the init: ');
           if (videoSupportChecker.video === null || videoSupportChecker.video === undefined) {
             displayImage();
           } else {
