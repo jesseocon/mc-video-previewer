@@ -3,3 +3,7 @@ $module: 'mc-video-preview';
 .#{$module} {
   display: block;
 }
+
+video.mc-video-previewer-video {
+  max-width: 100%;
+}

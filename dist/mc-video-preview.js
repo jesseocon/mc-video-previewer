@@ -16,7 +16,7 @@
       scope: {
         path: '=path'
       },
-      template: '<video class="mc-video-previewer-video" autoplay="{{autoplay}}" controls="{{controls}}" crossorigin="{{crossorigin}}" ng-show="videoSupported === true" style="max-width: 100%;">' + '<source src="{{vidObj.sanitizedPath()}}" type="{{vidObj.mimeType()}}" />' + '</video>' + '<ng-transclude ng-show="imgSupported === true"></ng-transclude>',
+      template: '<video class="mc-video-previewer-video" autoplay="{{autoplay}}" controls="{{controls}}" crossorigin="{{crossorigin}}" ng-show="videoSupported === true">' + '<source src="{{vidObj.sanitizedPath()}}" type="{{vidObj.mimeType()}}" />' + '</video>' + '<ng-transclude ng-show="imgSupported === true"></ng-transclude>',
       link: function link(scope, element) {
         var handleVideoLoaded, handleVideoSourceError, displayVideo, displayImage, isSupported, isntSupported, source, video;
 

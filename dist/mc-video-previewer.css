@@ -5,3 +5,6 @@
  */
 .mc-video-preview {
   display: block; }
+
+video.mc-video-previewer-video {
+  max-width: 100%; }
