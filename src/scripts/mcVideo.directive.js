@@ -7,16 +7,15 @@
       'videoSupportChecker'
     ])
     .directive('mcVideo', [
-      'VideoPreviewer', 'videoSupportChecker', '$timeout', function(VideoPreviewer, videoSupportChecker, $timeout) {
+      'VideoPreviewer', 'videoSupportChecker', '$timeout', 'mcVideoPreviewerSettings', function(VideoPreviewer, videoSupportChecker, $timeout, mcVideoPreviewerSettings) {
         /*jshint -W093 */
         return {
           restrict: 'E',
           transclude: true,
           scope: {
             path: '=path',
-            close: '&onClose'
           },
-          template: '<video class="mc-video-previewer-video" autoplay="true" controls="controls" crossorigin="anonymous" ng-show="videoSupported === true" ng-click="close()" style="max-width: 100%;">'+
+          template: '<video class="mc-video-previewer-video" autoplay="{{autoplay}}" controls="{{controls}}" crossorigin="{{crossorigin}}" ng-show="videoSupported === true" style="max-width: 100%;">'+
                       '<source src="{{vidObj.sanitizedPath()}}" type="{{vidObj.mimeType()}}" />'+
                     '</video>'+
                     '<ng-transclude ng-show="imgSupported === true"></ng-transclude>',
@@ -34,6 +33,10 @@
             if (scope.path === null || scope.path === undefined) {
               throw new Error('This module requires Video Support Checker');
             }
+
+            scope.crossorigin = mcVideoPreviewerSettings.crossorigin;
+            scope.controls    = mcVideoPreviewerSettings.controls;
+            scope.autoplay    = mcVideoPreviewerSettings.autoplay;
 
             scope.$watch('path', function(newValue, oldValue) {
               if (newValue !== oldValue) {

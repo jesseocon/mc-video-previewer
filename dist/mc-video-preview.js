@@ -8,16 +8,15 @@
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideo', ['VideoPreviewer', 'videoSupportChecker']).directive('mcVideo', ['VideoPreviewer', 'videoSupportChecker', '$timeout', function (VideoPreviewer, videoSupportChecker, $timeout) {
+  angular.module('mcVideo', ['VideoPreviewer', 'videoSupportChecker']).directive('mcVideo', ['VideoPreviewer', 'videoSupportChecker', '$timeout', 'mcVideoPreviewerSettings', function (VideoPreviewer, videoSupportChecker, $timeout, mcVideoPreviewerSettings) {
     /*jshint -W093 */
     return {
       restrict: 'E',
       transclude: true,
       scope: {
-        path: '=path',
-        close: '&onClose'
+        path: '=path'
       },
-      template: '<video class="mc-video-previewer-video" autoplay="true" controls="controls" crossorigin="anonymous" ng-show="videoSupported === true" ng-click="close()" style="max-width: 100%;">' + '<source src="{{vidObj.sanitizedPath()}}" type="{{vidObj.mimeType()}}" />' + '</video>' + '<ng-transclude ng-show="imgSupported === true"></ng-transclude>',
+      template: '<video class="mc-video-previewer-video" autoplay="{{autoplay}}" controls="{{controls}}" crossorigin="{{crossorigin}}" ng-show="videoSupported === true" style="max-width: 100%;">' + '<source src="{{vidObj.sanitizedPath()}}" type="{{vidObj.mimeType()}}" />' + '</video>' + '<ng-transclude ng-show="imgSupported === true"></ng-transclude>',
       link: function link(scope, element) {
         var handleVideoLoaded, handleVideoSourceError, displayVideo, displayImage, isSupported, isntSupported, source, video;
 
@@ -28,6 +27,16 @@
         if (scope.path === null || scope.path === undefined) {
           throw new Error('This module requires Video Support Checker');
         }
+
+        scope.crossorigin = mcVideoPreviewerSettings.crossorigin;
+        scope.controls = mcVideoPreviewerSettings.controls;
+        scope.autoplay = mcVideoPreviewerSettings.autoplay;
+
+        scope.$watch('path', function (newValue, oldValue) {
+          if (newValue !== oldValue) {
+            scope.init();
+          }
+        });
 
         scope.imgSupported = false;
         scope.videoSupported = false;
@@ -85,11 +94,6 @@
           } // End Main If Else
         };
         scope.init();
-        scope.$watch('path', function (newValue, oldValue) {
-          if (newValue !== oldValue) {
-            scope.init();
-          }
-        });
       } // End link key
     };
     /*jshint +W093 */
@@ -97,10 +101,41 @@
 })(window, window.angular);
 'use strict';
 
+angular.module('mcVideoPreviewerSettings', []).provider('mcVideoPreviewerSettings', function () {
+  var _defaults = {
+    crossorigin: 'anonymous',
+    autoplay: true,
+    controls: 'controls'
+  },
+      _settings,
+      getSettings = function getSettings() {
+    if (!_settings) {
+      _settings = angular.copy(_defaults);
+    };
+
+    return _settings;
+  };
+
+  this.set = function (prop, value) {
+    var s = getSettings();
+    if (angular.isObject(prop)) {
+      angular.extend(s, prop);
+    } else {
+      s[prop] = value;
+    }
+    return this;
+  };
+
+  this.$get = getSettings;
+
+  return this;
+});
+'use strict';
+
 (function (window, angular, undefined) {
   'use strict';
 
-  angular.module('mcVideoPreviewer', ['mcVideo', 'videoMime', 'VideoPreviewer', 'videoSupportChecker']);
+  angular.module('mcVideoPreviewer', ['mcVideo', 'videoMime', 'VideoPreviewer', 'videoSupportChecker', 'mcVideoPreviewerSettings']);
 })(window, window.angular);
 'use strict';
 
